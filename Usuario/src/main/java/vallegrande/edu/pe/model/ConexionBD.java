@@ -11,7 +11,7 @@ public class ConexionBD {
 
             Connection con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/veterinariaDB",
-                    "jimena",
+                    "jimenar",
                     "12345"
             );
 
@@ -20,7 +20,7 @@ public class ConexionBD {
 
         } catch (Exception e) {
 
-            System.out.println("No se pudo establecer la conexión");
+            System.out.println("Error de conexión");
             e.printStackTrace();
 
             throw new RuntimeException(e);

@@ -1,57 +1,89 @@
 package vallegrande.edu.pe.controller;
 
-import vallegrande.edu.pe.model.Mascota;
-import vallegrande.edu.pe.model.MascotaDAO;
+import vallegrande.edu.pe.model.*;
 import vallegrande.edu.pe.view.InicioView;
 import vallegrande.edu.pe.view.MascotaView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class MascotaController {
 
     MascotaDAO dao = new MascotaDAO();
+
     MascotaView vista;
 
     public MascotaController(MascotaView vista) {
 
         this.vista = vista;
 
-        vista.btnGuardar.addActionListener(e -> insertar());
-        vista.btnActualizar.addActionListener(e -> actualizar());
-        vista.btnEliminar.addActionListener(e -> eliminar());
-        vista.btnVolver.addActionListener(e -> volverInicio());
+        vista.btnGuardar.addActionListener(
+                e -> insertar()
+        );
 
-        vista.tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+        vista.btnEliminar.addActionListener(
+                e -> eliminar()
+        );
 
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+        vista.btnActualizar.addActionListener(
+                e -> actualizar()
+        );
 
-                int fila = vista.tabla.getSelectedRow();
+        vista.btnVolver.addActionListener(
+                e -> volverInicio()
+        );
 
-                vista.txtNombre.setText(
-                        vista.tabla.getValueAt(fila, 1).toString()
-                );
+        // BUSCADOR
+        vista.txtBuscar.addKeyListener(
+                new KeyAdapter() {
 
-                vista.txtEspecie.setText(
-                        vista.tabla.getValueAt(fila, 2).toString()
-                );
+                    @Override
+                    public void keyReleased(KeyEvent e) {
 
-                vista.txtRaza.setText(
-                        vista.tabla.getValueAt(fila, 3).toString()
-                );
+                        buscar(
+                                vista.txtBuscar.getText()
+                        );
+                    }
+                }
+        );
 
-                vista.txtEdad.setText(
-                        vista.tabla.getValueAt(fila, 4).toString()
-                );
-            }
-        });
+        // CLICK TABLA
+        vista.tabla.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent evt
+                    ) {
+
+                        int fila =
+                                vista.tabla.getSelectedRow();
+
+                        vista.txtNombre.setText(
+                                vista.tabla.getValueAt(fila,1)
+                                        .toString());
+
+                        vista.txtEspecie.setText(
+                                vista.tabla.getValueAt(fila,2)
+                                        .toString());
+
+                        vista.txtRaza.setText(
+                                vista.tabla.getValueAt(fila,3)
+                                        .toString());
+
+                        vista.txtEdad.setText(
+                                vista.tabla.getValueAt(fila,4)
+                                        .toString());
+                    }
+                }
+        );
 
         listar();
     }
 
-
+    // LISTAR
     public void listar() {
 
         List<Mascota> lista = dao.listar();
@@ -72,9 +104,41 @@ public class MascotaController {
                     m.getDueno()
             });
         }
+
+        // CONTADOR
+        vista.lblTotal.setText(
+                "Total mascotas: " + lista.size()
+        );
     }
 
+    // BUSCAR
+    public void buscar(String texto) {
 
+        List<Mascota> lista = dao.buscar(texto);
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) vista.tabla.getModel();
+
+        modelo.setRowCount(0);
+
+        for (Mascota m : lista) {
+
+            modelo.addRow(new Object[]{
+                    m.getId(),
+                    m.getNombre(),
+                    m.getEspecie(),
+                    m.getRaza(),
+                    m.getEdad(),
+                    m.getDueno()
+            });
+        }
+
+        vista.lblTotal.setText(
+                "Total mascotas: " + lista.size()
+        );
+    }
+
+    // INSERTAR
     public void insertar() {
 
         if (
@@ -94,36 +158,55 @@ public class MascotaController {
 
         try {
 
+            int edad =
+                    Integer.parseInt(
+                            vista.txtEdad.getText()
+                    );
+
             Mascota m = new Mascota();
 
-            m.setNombre(vista.txtNombre.getText());
-            m.setEspecie(vista.txtEspecie.getText());
-            m.setRaza(vista.txtRaza.getText());
-
-            m.setEdad(
-                    Integer.parseInt(vista.txtEdad.getText())
+            m.setNombre(
+                    vista.txtNombre.getText()
             );
+
+            m.setEspecie(
+                    vista.txtEspecie.getText()
+            );
+
+            m.setRaza(
+                    vista.txtRaza.getText()
+            );
+
+            m.setEdad(edad);
 
             dao.insertar(m);
 
             JOptionPane.showMessageDialog(
                     null,
-                    "Mascota registrada"
+                    "Mascota registrada correctamente"
             );
 
             listar();
+
             limpiar();
+
+        } catch (NumberFormatException e) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "La edad debe ser numérica"
+            );
 
         } catch (Exception e) {
 
             JOptionPane.showMessageDialog(
                     null,
-                    "Error al registrar"
+                    "Error al registrar mascota"
             );
         }
     }
 
-
+    // ACTUALIZAR
     public void actualizar() {
 
         int fila = vista.tabla.getSelectedRow();
@@ -140,19 +223,30 @@ public class MascotaController {
 
         try {
 
+            int edad =
+                    Integer.parseInt(
+                            vista.txtEdad.getText()
+                    );
+
             Mascota m = new Mascota();
 
             m.setId(
-                    (int) vista.tabla.getValueAt(fila, 0)
+                    (int) vista.tabla.getValueAt(fila,0)
             );
 
-            m.setNombre(vista.txtNombre.getText());
-            m.setEspecie(vista.txtEspecie.getText());
-            m.setRaza(vista.txtRaza.getText());
-
-            m.setEdad(
-                    Integer.parseInt(vista.txtEdad.getText())
+            m.setNombre(
+                    vista.txtNombre.getText()
             );
+
+            m.setEspecie(
+                    vista.txtEspecie.getText()
+            );
+
+            m.setRaza(
+                    vista.txtRaza.getText()
+            );
+
+            m.setEdad(edad);
 
             dao.actualizar(m);
 
@@ -162,19 +256,26 @@ public class MascotaController {
             );
 
             listar();
+
             limpiar();
+
+        } catch (NumberFormatException e) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "La edad debe ser numérica"
+            );
 
         } catch (Exception e) {
 
             JOptionPane.showMessageDialog(
                     null,
-                    "Error al actualizar"
+                    "Error al actualizar mascota"
             );
         }
     }
 
-
-
+    //  ELIMINAR
     public void eliminar() {
 
         int fila = vista.tabla.getSelectedRow();
@@ -189,35 +290,50 @@ public class MascotaController {
             return;
         }
 
-        int id = (int) vista.tabla.getValueAt(fila, 0);
-
-        dao.eliminar(id);
-
-        JOptionPane.showMessageDialog(
+        int confirmar = JOptionPane.showConfirmDialog(
                 null,
-                "Mascota eliminada"
+                "¿Desea eliminar esta mascota?",
+                "Confirmar",
+                JOptionPane.YES_NO_OPTION
         );
 
-        listar();
-        limpiar();
+        if (confirmar == 0) {
+
+            int id =
+                    (int) vista.tabla.getValueAt(fila,0);
+
+            dao.eliminar(id);
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Mascota eliminada"
+            );
+
+            listar();
+
+            limpiar();
+        }
     }
 
-
+    // LIMPIAR
     public void limpiar() {
 
         vista.txtNombre.setText("");
+
         vista.txtEspecie.setText("");
+
         vista.txtRaza.setText("");
+
         vista.txtEdad.setText("");
     }
 
-
+    // VOLVER
     public void volverInicio() {
-
-        vista.dispose();
 
         InicioView inicio = new InicioView();
 
         inicio.setVisible(true);
+
+        vista.dispose();
     }
 }

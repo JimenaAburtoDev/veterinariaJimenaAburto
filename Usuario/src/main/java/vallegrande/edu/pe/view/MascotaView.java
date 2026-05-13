@@ -12,6 +12,9 @@ public class MascotaView extends JFrame {
     public JTextField txtEspecie;
     public JTextField txtRaza;
     public JTextField txtEdad;
+    public JTextField txtBuscar;
+
+    public JLabel lblTotal;
 
     public JButton btnGuardar;
     public JButton btnActualizar;
@@ -21,18 +24,52 @@ public class MascotaView extends JFrame {
     public MascotaView() {
 
         setTitle("Gestión de Mascotas");
-        setSize(800, 500);
+
+        setSize(900, 550);
+
         setLocationRelativeTo(null);
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // 🎨 Colores veterinaria
+        //  ÍCONO
+        Image iconoApp = Toolkit.getDefaultToolkit().getImage(
+                getClass().getResource("/img/icono.png")
+        );
+
+        setIconImage(iconoApp);
+        //  Colores veterinaria
         Color fondo = new Color(245, 235, 220);
+
         Color marron = new Color(139, 94, 60);
+
         Color marronOscuro = new Color(92, 64, 51);
 
         getContentPane().setBackground(fondo);
 
+        // ====================================
+        // LOGO
+        // ====================================
 
+        ImageIcon iconoOriginal = new ImageIcon(
+                getClass().getResource("/img/perrito.png")
+        );
+
+//  REDIMENSIONAR IMAGEN
+        Image imagen = iconoOriginal.getImage().getScaledInstance(
+                120, // ancho
+                120, // alto
+                Image.SCALE_SMOOTH
+        );
+
+        ImageIcon iconoPequeno = new ImageIcon(imagen);
+
+        JLabel logo = new JLabel(iconoPequeno);
+
+        logo.setHorizontalAlignment(JLabel.CENTER);
+
+        // ====================================
+        // TABLA
+        // ====================================
 
         tabla = new JTable(
                 new DefaultTableModel(
@@ -50,19 +87,42 @@ public class MascotaView extends JFrame {
 
         tabla.setRowHeight(25);
 
+        tabla.setSelectionBackground(
+                new Color(139,94,60)
+        );
+
+        tabla.setSelectionForeground(Color.WHITE);
+
+        tabla.setFont(
+                new Font("Segoe UI", Font.PLAIN, 13)
+        );
+
+        tabla.getTableHeader().setFont(
+                new Font("Segoe UI", Font.BOLD, 13)
+        );
+
         tabla.getTableHeader().setBackground(marronOscuro);
+
         tabla.getTableHeader().setForeground(Color.WHITE);
 
         JScrollPane scroll = new JScrollPane(tabla);
 
+        // ====================================
+        // CAMPOS
+        // ====================================
 
         txtNombre = new JTextField();
+
         txtEspecie = new JTextField();
+
         txtRaza = new JTextField();
+
         txtEdad = new JTextField();
 
+        txtBuscar = new JTextField();
+
         JPanel formulario = new JPanel(
-                new GridLayout(4, 2, 10, 10)
+                new GridLayout(5, 2, 10, 10)
         );
 
         formulario.setBackground(fondo);
@@ -79,10 +139,19 @@ public class MascotaView extends JFrame {
         formulario.add(new JLabel("Edad:"));
         formulario.add(txtEdad);
 
+        formulario.add(new JLabel("Buscar:"));
+        formulario.add(txtBuscar);
+
+        // ====================================
+        // BOTONES
+        // ====================================
 
         btnGuardar = new JButton("Guardar");
+
         btnActualizar = new JButton("Actualizar");
+
         btnEliminar = new JButton("Eliminar");
+
         btnVolver = new JButton("Volver");
 
         btnGuardar.setBackground(marron);
@@ -102,13 +171,71 @@ public class MascotaView extends JFrame {
         botones.setBackground(fondo);
 
         botones.add(btnGuardar);
+
         botones.add(btnActualizar);
+
         botones.add(btnEliminar);
+
         botones.add(btnVolver);
 
+        // ====================================
+        // CONTADOR
+        // ====================================
 
-        add(formulario, BorderLayout.NORTH);
+        lblTotal = new JLabel("Total mascotas: 0");
+
+        lblTotal.setFont(
+                new Font("Segoe UI", Font.BOLD, 14)
+        );
+
+        lblTotal.setForeground(marronOscuro);
+
+        JPanel inferior = new JPanel(
+                new BorderLayout()
+        );
+
+        inferior.setBackground(fondo);
+
+        inferior.add(botones, BorderLayout.CENTER);
+
+        inferior.add(lblTotal, BorderLayout.SOUTH);
+
+        // ====================================
+        // PANEL SUPERIOR
+        // ====================================
+
+        JPanel superior = new JPanel(
+                new BorderLayout()
+        );
+
+        superior.setBackground(fondo);
+
+        superior.add(logo, BorderLayout.NORTH);
+
+        superior.add(formulario, BorderLayout.SOUTH);
+
+        // ====================================
+        // AGREGAR COMPONENTES
+        // ====================================
+
+        JMenuBar barra = new JMenuBar();
+
+        JMenu menuArchivo = new JMenu("Archivo");
+
+        JMenuItem itemSalir = new JMenuItem("Salir");
+
+        itemSalir.addActionListener(e -> System.exit(0));
+
+        menuArchivo.add(itemSalir);
+
+        barra.add(menuArchivo);
+
+        setJMenuBar(barra);
+
+        add(superior, BorderLayout.NORTH);
+
         add(scroll, BorderLayout.CENTER);
-        add(botones, BorderLayout.SOUTH);
+
+        add(inferior, BorderLayout.SOUTH);
     }
 }
