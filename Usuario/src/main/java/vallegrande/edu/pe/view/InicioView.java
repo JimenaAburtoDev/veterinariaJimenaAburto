@@ -7,7 +7,7 @@ public class InicioView extends JFrame {
 
     public InicioView() {
 
-        setTitle("Sistema Veterinaria");
+        setTitle("Sistema - Veterinaria");
 
         setSize(500, 500);
 
