@@ -88,7 +88,7 @@ public class MascotaView extends JFrame {
         tabla.setRowHeight(25);
 
         tabla.setSelectionBackground(
-                new Color(139,94,60)
+                new Color(139, 85, 41)
         );
 
         tabla.setSelectionForeground(Color.WHITE);
