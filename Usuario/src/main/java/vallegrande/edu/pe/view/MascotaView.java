@@ -152,7 +152,7 @@ public class MascotaView extends JFrame {
 
         btnEliminar = new JButton("Eliminar");
 
-        btnVolver = new JButton("Volver");
+        btnVolver = new JButton("Volver al Inicio");
 
         btnGuardar.setBackground(marron);
         btnGuardar.setForeground(Color.WHITE);

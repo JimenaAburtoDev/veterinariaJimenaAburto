@@ -1,6 +1,7 @@
 package vallegrande.edu.pe;
 
-import vallegrande.edu.pe.view.InicioView;
+import vallegrande.edu.pe.controller.LoginController;
+import vallegrande.edu.pe.view.LoginView;
 
 public class Main {
 
@@ -8,10 +9,13 @@ public class Main {
 
         java.awt.EventQueue.invokeLater(() -> {
 
-            InicioView inicio = new InicioView();
-            inicio.setVisible(true);
+            LoginView login =
+                    new LoginView();
+
+            new LoginController(login);
+
+            login.setVisible(true);
 
         });
-
     }
 }

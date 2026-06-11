@@ -1,5 +1,9 @@
 package vallegrande.edu.pe.view;
 
+import vallegrande.edu.pe.controller.LoginController;
+import vallegrande.edu.pe.controller.MascotaController;
+import vallegrande.edu.pe.controller.ReportesController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,124 +11,137 @@ public class InicioView extends JFrame {
 
     public InicioView() {
 
-        setTitle("Sistema - Veterinaria");
-
-        setSize(500, 500);
-
+        setTitle("Sistema Veterinaria");
+        setSize(500, 350);
         setLocationRelativeTo(null);
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // ICONO
-        Image icono = Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/img/icono.png")
-        );
-
-        setIconImage(icono);
-
-        // COLORES
-        Color fondo = new Color(245,235,220);
-
-        Color marron = new Color(139,94,60);
-
-        Color marronOscuro = new Color(92,64,51);
+        Color fondo = new Color(245, 235, 220);
+        Color marron = new Color(139, 94, 60);
+        Color marronOscuro = new Color(92, 64, 51);
 
         JPanel panel = new JPanel(new BorderLayout());
-
         panel.setBackground(fondo);
 
-        // TITULO
         JLabel titulo = new JLabel(
                 "SISTEMA VETERINARIA",
                 JLabel.CENTER
         );
 
-        titulo.setFont(
-                new Font("Segoe UI", Font.BOLD, 24)
-        );
+        titulo.setFont(new Font(
+                "Segoe UI",
+                Font.BOLD,
+                22
+        ));
 
         titulo.setForeground(marronOscuro);
 
-        // IMAGEN
-        ImageIcon iconoOriginal = new ImageIcon(
-                getClass().getResource("/img/perrito.png")
-        );
-
-        Image imagen = iconoOriginal.getImage()
-                .getScaledInstance(
-                        120,
-                        120,
-                        Image.SCALE_SMOOTH
-                );
-
-        JLabel logo = new JLabel(
-                new ImageIcon(imagen)
-        );
-
-        logo.setHorizontalAlignment(JLabel.CENTER);
-
-        // DESCRIPCIÓN
         JLabel descripcion = new JLabel(
                 "<html><div style='text-align:center;'>"
                         + "Sistema desarrollado con Java MVC<br>"
-                        + "Gestión de mascotas y veterinaria"
+                        + "Gestión de Mascotas y Reportes"
                         + "</div></html>",
                 JLabel.CENTER
         );
 
         descripcion.setFont(
-                new Font("Segoe UI", Font.PLAIN, 15)
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        14
+                )
         );
 
-        // BOTON
-        JButton btnIngresar = new JButton(
-                "Ingresar al Sistema"
-        );
+        JButton btnIngresar =
+                new JButton("Ingresar al Sistema");
 
         btnIngresar.setBackground(marron);
-
         btnIngresar.setForeground(Color.WHITE);
-
-        btnIngresar.setFocusPainted(false);
 
         btnIngresar.addActionListener(e -> {
 
-            MascotaView vista = new MascotaView();
+            MascotaView vista =
+                    new MascotaView();
 
-            new vallegrande.edu.pe.controller
-                    .MascotaController(vista);
+            new MascotaController(vista);
 
             vista.setVisible(true);
 
             dispose();
         });
 
-        // CENTRO
-        JPanel centro = new JPanel(
-                new GridLayout(3,1,10,10)
-        );
+        JButton btnReporte =
+                new JButton("Ver Reporte Mascotas");
+
+        btnReporte.setBackground(marron);
+        btnReporte.setForeground(Color.WHITE);
+
+        btnReporte.addActionListener(e -> {
+
+            try {
+
+                ReportesController reporte =
+                        new ReportesController();
+
+                reporte.verReporte();
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error al generar reporte:\n"
+                                + ex.getMessage()
+                );
+
+                ex.printStackTrace();
+            }
+
+        });
+
+        JButton btnCerrarSesion =
+                new JButton("Cerrar Sesión");
+
+        btnCerrarSesion.setBackground(marronOscuro);
+        btnCerrarSesion.setForeground(Color.WHITE);
+
+        btnCerrarSesion.addActionListener(e -> {
+
+            LoginView login =
+                    new LoginView();
+
+            new LoginController(login);
+
+            login.setVisible(true);
+
+            dispose();
+        });
+
+        JPanel centro =
+                new JPanel(
+                        new GridLayout(
+                                4,
+                                1,
+                                10,
+                                10
+                        )
+                );
 
         centro.setBackground(fondo);
 
-        centro.add(logo);
-
         centro.add(descripcion);
-
         centro.add(btnIngresar);
+        centro.add(btnReporte);
+        centro.add(btnCerrarSesion);
 
-        // FOOTER
-        JLabel footer = new JLabel(
-                "Desarrollado con Java MVC",
-                JLabel.CENTER
+        panel.add(
+                titulo,
+                BorderLayout.NORTH
         );
 
-        footer.setForeground(marronOscuro);
-
-        panel.add(titulo, BorderLayout.NORTH);
-
-        panel.add(centro, BorderLayout.CENTER);
-
-        panel.add(footer, BorderLayout.SOUTH);
+        panel.add(
+                centro,
+                BorderLayout.CENTER
+        );
 
         add(panel);
     }
